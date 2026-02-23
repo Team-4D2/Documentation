@@ -16,4 +16,4 @@ Module Reference
 .. autosummary::
    :toctree: generated
 
-   lumache
+   unifeed

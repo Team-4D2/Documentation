@@ -2,12 +2,12 @@
 
 # -- Project information
 
-project = 'Lumache'
-copyright = '2021, Graziella'
-author = 'Graziella'
+project = 'UniFeed'
+copyright = '2026, Team 4D2, Michael Parker, Lewis Ryan, Nickyyl'
+author = 'Team 4D2, Michael Parker, Lewis Ryan, Nickyyl'
 
-release = '0.1'
-version = '0.1.0'
+release = '0.2'
+version = '0.2.0'
 
 # -- General configuration
 

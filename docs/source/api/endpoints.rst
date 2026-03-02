@@ -3,7 +3,7 @@ Endpoints
 
 Overview
 --------
-this page discribes the endpoints of the API used by the server
+This page describes the endpoints of the API used by the server.
 
 Base URL
 --------
@@ -12,161 +12,195 @@ Authentication
 --------------
 A token will be sent after a successful login. 
 This token must be included in the header of all subsequent requests to access protected endpoints.
-the header should be in the format: ``Authorization Bearer <token>``
+The header should be in the format: ``Authorization: Bearer <token>``
+
 Available Endpoints
 -------------------
-* /login
 
-POST
+/login
+^^^^^^
 
-this endpoint is used to authenticate users and obtain a token for subsequent requests. 
+**POST**
+
+This endpoint is used to authenticate users and obtain a token for subsequent requests.
 It accepts user credentials (email and password) and returns a token if the credentials are valid.
-if successful it returns a JSON response containing the token in the feild access_token.
+If successful, it returns a JSON response containing the token in the field ``access_token``.
 
-the full responce looks like this:
+The full response looks like this:
+
 .. code-block:: json
 
-	{
-		"access_token": <Token>,
-		"token_type": "bearer"
-		"username": <Username>
-	}
+   {
+       "access_token": "<Token>",
+       "token_type": "bearer",
+       "username": "<Username>"
+   }
 
-if there is an error the responce will look like this:
+If there is an error, the response will look like this:
+
 .. code-block:: json
 
-	{
-		"error": <Error Message>
-	}
-the errors that can be returned are:
- *"invalid email or password" if the provided credentials are incorrect.
- *"email and password are required" if either the email or password is missing from the request.
+   {
+       "error": "<Error Message>"
+   }
 
-* /register
+The errors that can be returned are:
 
-POST
+* ``"invalid email or password"`` - if the provided credentials are incorrect.
+* ``"email and password are required"`` - if either the email or password is missing from the request.
 
-This endpoint is used to create a new user account. need to provide a username, email, and password to register a new user.
-if successful it returns this:
+/register
+^^^^^^^^^
+
+**POST**
+
+This endpoint is used to create a new user account. You need to provide a username, email, and password to register a new user.
+
+If successful, it returns this:
+
 .. code-block:: json
 
-	{
-		"message": "User registered successfully"
-	}
-if there is an error the responce will look like this:
+   {
+       "message": "User registered successfully"
+   }
+
+If there is an error, the response will look like this:
+
 .. code-block:: json
 
-	{
-		"error": <Error Message>
-	}
-the errors that can be returned are:
- *"username, email and password are required" if any of the required fields are missing.
- *"email must end in @myport.ac.uk" if the email does not end with @myport.ac.uk.
+   {
+       "error": "<Error Message>"
+   }
 
-* /join_society
+The errors that can be returned are:
 
-POST
+* ``"username, email and password are required"`` - if any of the required fields are missing.
+* ``"email must end in @myport.ac.uk"`` - if the email does not end with @myport.ac.uk.
 
-Allows the user to join a society. The user must provide the society id and the token received by the /login endpoint in the header of the request.
-the responce will be:
+/join_society
+^^^^^^^^^^^^^
+
+**POST**
+
+Allows the user to join a society. The user must provide the society ID and the token received by the ``/login`` endpoint in the header of the request.
+
+The response will be:
+
 .. code-block:: json
 
-	{
-		"message": "User <Username> joined society <Society ID>"
-	}
+   {
+       "message": "User <Username> joined society <Society ID>"
+   }
 
+This endpoint always succeeds and does not return any error messages.
 
-this end point always successed and does not return any error messages.
+/friend_request
+^^^^^^^^^^^^^^^
 
-* /friend_request
+**POST**
 
-POST
+This endpoint allows a user to send a friend request to another user. The user must provide the recipient's ID and the token received by the ``/login`` endpoint in the header of the request.
 
-this endpoint allows a user to send a friend request to another user. The user must provide the recipient's id and the token received by the /login endpoint in the header of the request.
-the responce will be:
+The response will be:
+
 .. code-block:: json
 
-	{
-		"message": "Friend request sent to user <Recipient ID>"
-	}
-this end point always successed and does not return any error messages.
+   {
+       "message": "Friend request sent to user <Recipient ID>"
+   }
 
-* /accept_friend_request
+This endpoint always succeeds and does not return any error messages.
 
-POST
+/accept_friend_request
+^^^^^^^^^^^^^^^^^^^^^^
 
-this endpoint allows a user to accept a friend request from another user. The user must provide the sender's id and the token received by the /login endpoint in the header of the request.
-the responce will be:
+**POST**
+
+This endpoint allows a user to accept a friend request from another user. The user must provide the sender's ID and the token received by the ``/login`` endpoint in the header of the request.
+
+The response will be:
+
 .. code-block:: json
 
-	{
-		"message": "Friend request from user <Sender ID> accepted"
-	}
-this end point always successed and does not return any error messages.
+   {
+       "message": "Friend request from user <Sender ID> accepted"
+   }
 
-* /list_all_societies
+This endpoint always succeeds and does not return any error messages.
 
-GET
+/list_all_societies
+^^^^^^^^^^^^^^^^^^^
 
-this endpoint returns a list of all societies in the database. It does not require authentication and can be accessed by anyone.
-the responce will be a JSON array of society objects, each containing the following fields:
-- id: The unique identifier of the society.
-- name: The name of the society.
-- description: A brief description of the society.
-- created_at: The date and time when the society was created.
+**GET**
 
-this is an example of the responce:
+This endpoint returns a list of all societies in the database. It does not require authentication and can be accessed by anyone.
+
+The response will be a JSON array of society objects, each containing the following fields:
+
+* ``id`` - The unique identifier of the society.
+* ``name`` - The name of the society.
+* ``description`` - A brief description of the society.
+* ``created_at`` - The date and time when the society was created.
+
+This is an example of the response:
+
 .. code-block:: json
-	{
-		"societies": [
-			{
-				"id": 1,
-				"name": "Society Name",
-				"description": "Society Description",
-				"created_at": "2024-01-01T00:00:00Z"
-			},
-			{
-				"id": 2,
-				"name": "Another Society",
-				"description": "Another Description",
-				"created_at": "2024-02-01T00:00:00Z"
-			}
-		]
-	}
 
-this endpoint always successed and does not return any error messages.
+   {
+       "societies": [
+           {
+               "id": 1,
+               "name": "Society Name",
+               "description": "Society Description",
+               "created_at": "2024-01-01T00:00:00Z"
+           },
+           {
+               "id": 2,
+               "name": "Another Society",
+               "description": "Another Description",
+               "created_at": "2024-02-01T00:00:00Z"
+           }
+       ]
+   }
 
-* /list_user_societies
+This endpoint always succeeds and does not return any error messages.
 
-GET
+/list_user_societies
+^^^^^^^^^^^^^^^^^^^^
 
-this endpoint returns the societies that the authenticated user has joined. It requires authentication to use.
-the responce will be a JSON array of society objects, each containing the following fields:
-- id: The unique identifier of the society.
-- name: The name of the society.
-- description: A brief description of the society.
-- created_at: The date and time when the society was created.
+**GET**
 
-this is an example of the responce:
+This endpoint returns the societies that the authenticated user has joined. It requires authentication to use.
+
+The response will be a JSON array of society objects, each containing the following fields:
+
+* ``id`` - The unique identifier of the society.
+* ``name`` - The name of the society.
+* ``description`` - A brief description of the society.
+* ``created_at`` - The date and time when the society was created.
+
+This is an example of the response:
+
 .. code-block:: json
-	{
-		"societies": [
-			{
-				"id": 1,
-				"name": "Society Name",
-				"description": "Society Description",
-				"created_at": "2024-01-01T00:00:00Z"
-			},
-			{
-				"id": 2,
-				"name": "Another Society",
-				"description": "Another Description",
-				"created_at": "2024-02-01T00:00:00Z"
-			}
-		]
-	}
 
-this endpoint always successed and does not return any error messages.
+   {
+       "societies": [
+           {
+               "id": 1,
+               "name": "Society Name",
+               "description": "Society Description",
+               "created_at": "2024-01-01T00:00:00Z"
+           },
+           {
+               "id": 2,
+               "name": "Another Society",
+               "description": "Another Description",
+               "created_at": "2024-02-01T00:00:00Z"
+           }
+       ]
+   }
+
+This endpoint always succeeds and does not return any error messages.
 Users
 ^^^^^
 

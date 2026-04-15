@@ -4,16 +4,7 @@ Database Design
 Overview
 --------
 
-This document outlines the database schema for the SETaP API. Note that there are currently discrepancies between the database initialization script (``setup.py``) and the application logic (``main.py``).
-
-Schema Discrepancies
---------------------
-
-The following discrepancies exist between the current codebase files:
-
-* **Missing Tables in setup.py:** Several tables used in ``main.py`` (``Posts``, ``EventLikes``, ``PostLikes``, ``EventReplies``, ``PostReplies``) are not initialized in ``setup.py``.
-* **Unused Table in main.py:** The ``SocietyPosts`` table is created by ``setup.py`` but is not referenced or used anywhere in ``main.py``. The application instead uses a table named ``Posts``.
-* **Missing Columns in setup.py:** The ``Events`` table in ``setup.py`` is missing the ``CREATED_BY`` column which is required by the creation logic in ``main.py``.
+This document outlines the database schema for the SETaP API.
 
 Database Schema
 ---------------
@@ -132,7 +123,7 @@ Events
      - Date and time the event was created.
    * - CREATED_BY
      - INTEGER
-     - ID of the user who created the event (Missing in ``setup.py``).
+     - ID of the user who created the event.
 
 SocietyMemberships
 """"""""""""""""""
@@ -163,8 +154,6 @@ SocietyMemberships
 Posts
 """""
 
-*Note: This table is used by main.py but not initialized in setup.py.*
-
 .. list-table::
    :header-rows: 1
    :widths: 25 25 50
@@ -188,38 +177,8 @@ Posts
      - INTEGER
      - ID of the user who created the post.
 
-SocietyPosts
-""""""""""""
-
-*Note: This table is created by setup.py but not used by main.py.*
-
-.. list-table::
-   :header-rows: 1
-   :widths: 25 25 50
-
-   * - Column
-     - Type
-     - Description
-   * - ID
-     - INTEGER PRIMARY KEY
-     - 
-   * - SOCIETY_ID
-     - INTEGER
-     - 
-   * - USER_ID
-     - INTEGER
-     - 
-   * - CONTENT
-     - TEXT
-     - 
-   * - CREATED_AT
-     - TIMESTAMP
-     - 
-
 EventLikes
 """"""""""
-
-*Note: This table is used by main.py but not initialized in setup.py.*
 
 .. list-table::
    :header-rows: 1
@@ -241,8 +200,6 @@ EventLikes
 PostLikes
 """""""""
 
-*Note: This table is used by main.py but not initialized in setup.py.*
-
 .. list-table::
    :header-rows: 1
    :widths: 25 25 50
@@ -263,12 +220,54 @@ PostLikes
 EventReplies
 """"""""""""
 
-*Note: This table is referenced by delete operations in main.py but not initialized in setup.py.*
+.. list-table::
+   :header-rows: 1
+   :widths: 25 25 50
+
+   * - Column
+     - Type
+     - Description
+   * - ID
+     - INTEGER PRIMARY KEY
+     - Unique identifier for the reply.
+   * - EVENT_ID
+     - INTEGER
+     - ID of the event being replied to.
+   * - USER_ID
+     - INTEGER
+     - ID of the user who wrote the reply.
+   * - CONTENT
+     - TEXT
+     - The text content of the reply.
+   * - CREATED_AT
+     - TIMESTAMP
+     - Date and time the reply was created.
 
 PostReplies
 """""""""""
 
-*Note: This table is referenced by delete operations in main.py but not initialized in setup.py.*
+.. list-table::
+   :header-rows: 1
+   :widths: 25 25 50
+
+   * - Column
+     - Type
+     - Description
+   * - ID
+     - INTEGER PRIMARY KEY
+     - Unique identifier for the reply.
+   * - POST_ID
+     - INTEGER
+     - ID of the post being replied to.
+   * - USER_ID
+     - INTEGER
+     - ID of the user who wrote the reply.
+   * - CONTENT
+     - TEXT
+     - The text content of the reply.
+   * - CREATED_AT
+     - TIMESTAMP
+     - Date and time the reply was created.
 
 Connection Management
 ---------------------

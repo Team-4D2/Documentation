@@ -46,8 +46,8 @@ If there is an error, the response will look like this:
 
 The errors that can be returned are:
 
-* ``"invalid email or password"`` - if the provided credentials are incorrect.
-* ``"email and password are required"`` - if either the email or password is missing from the request.
+* ``"Invalid email or password"`` - if the provided credentials are incorrect.
+* ``"Email and password are required"`` - if either the email or password is missing from the request.
 
 /register
 ^^^^^^^^^
@@ -74,8 +74,8 @@ If there is an error, the response will look like this:
 
 The errors that can be returned are:
 
-* ``"username, email and password are required"`` - if any of the required fields are missing.
-* ``"email must end in @myport.ac.uk"`` - if the email does not end with @myport.ac.uk.
+* ``"Username, email and password are required"`` - if any of the required fields are missing.
+* ``"Email must end with @myport.ac.uk"`` - if the email does not end with @myport.ac.uk.
 
 /join_society
 ^^^^^^^^^^^^^
@@ -92,7 +92,9 @@ The response will be:
        "message": "User <Username> joined society <Society ID>"
    }
 
-This endpoint always succeeds and does not return any error messages.
+Possible errors:
+
+* ``"User is already a member of this society"`` - if the user is already a member.
 
 /friend_request
 ^^^^^^^^^^^^^^^
@@ -402,11 +404,18 @@ The response will be:
        "message": "Event updated successfully"
    }
 
+If no update parameters are provided, the response will be:
+
+.. code-block:: json
+
+   {
+       "message": "No updates provided"
+   }
+
 Possible errors:
 
 * ``"Event not found"`` - if the event ID does not exist.
 * ``"Only committee members and presidents can update events"`` - if the user is not a committee member or president.
-* ``"No updates provided"`` - if no update parameters are provided.
 
 /delete_event/{event_id}
 ^^^^^^^^^^^^^^^^^^^^^^^^

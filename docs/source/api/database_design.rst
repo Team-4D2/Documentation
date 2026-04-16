@@ -272,5 +272,20 @@ PostReplies
 Connection Management
 ---------------------
 
+The API uses ``aiosqlite`` to manage asynchronous connections to the SQLite database. Each request typically opens a new connection and closes it upon completion, or uses a context manager to ensure proper resource management.
+
 Best Practices
 --------------
+
+* **Asynchronous Operations**: Always use ``await`` with database queries to prevent blocking the main event loop.
+* **Parameterized Queries**: Use ``?`` placeholders to prevent SQL injection.
+* **Transaction Management**: Use ``await db.commit()`` after write operations (INSERT, UPDATE, DELETE).
+
+Database Testing
+----------------
+
+The unit test suite in ``test_main.py`` uses a dedicated fixture to manage the database during testing. 
+
+* **Isolation**: Before each test run, the existing ``database.db`` is removed and a fresh one is created with the full schema.
+* **Test Data**: The fixture populates the database with consistent test data (users, societies, memberships) to ensure predictable test results.
+* **Cleanup**: The database can be optionally removed after tests to maintain a clean environment.

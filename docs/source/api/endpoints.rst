@@ -84,17 +84,17 @@ The errors that can be returned are:
 
 Allows the user to join a society. The user must provide the society ID and the token received by the ``/login`` endpoint in the header of the request.
 
-The response will be:
+The response will be a plain string:
 
-.. code-block:: json
+.. code-block:: text
 
-   {
-       "message": "User <Username> joined society <Society ID>"
-   }
+   "The <User ID> has joined the society"
 
-Possible errors:
+Possible errors (returned as plain strings):
 
-* ``"User is already a member of this society"`` - if the user is already a member.
+* ``"Error Bad Soc ID"`` - if the society ID is invalid or does not exist.
+* ``"<User ID> Does not exist"`` - if the user ID from the token does not exist in the database.
+* ``"<User ID> is all ready in the society"`` - if the user is already a member.
 
 /friend_request
 ^^^^^^^^^^^^^^^
@@ -103,15 +103,17 @@ Possible errors:
 
 This endpoint allows a user to send a friend request to another user. The user must provide the recipient's ID and the token received by the ``/login`` endpoint in the header of the request.
 
-The response will be:
+The response will be a plain string:
 
-.. code-block:: json
+.. code-block:: text
 
-   {
-       "message": "Friend request sent to user <Recipient ID>"
-   }
+   "Friend request sent by user <Recipient ID>"
 
-This endpoint always succeeds and does not return any error messages.
+Possible errors (returned as plain strings):
+
+* ``"null friend id"`` - if no friend ID is provided.
+* ``"invalid friend id"`` - if the friend ID is negative or the user does not exist.
+* ``"Already sent a friend request"`` - if a request has already been sent to this user.
 
 /accept_friend_request
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -120,15 +122,16 @@ This endpoint always succeeds and does not return any error messages.
 
 This endpoint allows a user to accept a friend request from another user. The user must provide the sender's ID and the token received by the ``/login`` endpoint in the header of the request.
 
-The response will be:
+The response will be a plain string:
 
-.. code-block:: json
+.. code-block:: text
 
-   {
-       "message": "Friend request from user <Sender ID> accepted"
-   }
+   "Friend requset from <Sender ID> accepted"
 
-This endpoint always succeeds and does not return any error messages.
+Possible errors (returned as plain strings):
+
+* ``"null sender id"`` - if no sender ID is provided.
+* ``"invalid sender id"`` - if the sender ID is invalid or no pending request exists.
 
 /list_all_societies
 ^^^^^^^^^^^^^^^^^^^
@@ -211,17 +214,17 @@ This endpoint always succeeds and does not return any error messages.
 
 This endpoint allows the user to leave a society. The user must provide the society ID and the token received by the ``/login`` endpoint in the header of the request.
 
-The response will be:
+The response will be a plain string:
 
-.. code-block:: json
+.. code-block:: text
 
-   {
-       "message": "User <Username> left society <Society ID>"
-   }
+   "user <Username> left society <Society ID>"
 
-Possible errors:
+Possible errors (returned as plain strings):
 
-* ``"User is not a member of this society"`` - if the user is not a member of the specified society.
+* ``"Invalid society id"`` - if the society ID is missing or negative.
+* ``"socierty does not exsist"`` - if the society does not exist in the database.
+* ``"error, user is not a member of this socierty"`` - if the user is not a member of the specified society.
 
 /list_friends
 ^^^^^^^^^^^^^^
@@ -361,9 +364,9 @@ This endpoint allows committee members and presidents to create a new event. It 
 Request parameters:
 
 * ``society_id`` - The ID of the society (required).
-* ``name`` - The name of the event (required).
+* ``name`` - The name of the event (required, minimum 4 characters).
 * ``description`` - A description of the event (required).
-* ``event_date`` - The date and time of the event (required).
+* ``event_date`` - The date and time of the event (required, format DD/MM/YYYY).
 * ``location`` - The location of the event (required).
 
 The response will be:
@@ -374,9 +377,15 @@ The response will be:
        "message": "Event created successfully"
    }
 
-Possible errors:
+Possible errors (some returned as plain strings, some as JSON):
 
-* ``"Only committee members and presidents can create events"`` - if the user is not a committee member or president.
+* ``"Error, empty title"`` (string) - if the name is empty.
+* ``"Title must be at least 4 chars long"`` (string) - if the name is shorter than 4 characters.
+* ``"Location must exist"`` (string) - if the location is empty.
+* ``"Error, need eescription"`` (string) - if the description is empty.
+* ``"Error, Can't set a data in the past"`` (string) - if the date is before year 2000.
+* ``"<Society ID> does not exist"`` (string) - if the society ID does not exist.
+* ``{"error": "Only committee members and presidents can create events"}`` (JSON) - if the user lacks permissions.
 
 /update_event/{event_id}
 ^^^^^^^^^^^^^^^^^^^^^^^^

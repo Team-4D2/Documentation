@@ -17,6 +17,34 @@ The header should be in the format: ``Authorization: Bearer <token>``
 Available Endpoints
 -------------------
 
+/register
+^^^^^^^^^
+
+**POST**
+
+This endpoint is used to create a new user account. You need to provide a username, email, and password to register a new user.
+
+If successful, it returns this:
+
+.. code-block:: json
+
+   {
+       "message": "User registered successfully"
+   }
+
+If there is an error, the response will look like this:
+
+.. code-block:: json
+
+   {
+       "error": "<Error Message>"
+   }
+
+The errors that can be returned are:
+
+* ``"Username, email and password are required"`` - if any of the required fields are missing.
+* ``"Email must end with @myport.ac.uk"`` - if the email does not end with @myport.ac.uk.
+
 /login
 ^^^^^^
 
@@ -49,33 +77,6 @@ The errors that can be returned are:
 * ``"Invalid email or password"`` - if the provided credentials are incorrect.
 * ``"Email and password are required"`` - if either the email or password is missing from the request.
 
-/register
-^^^^^^^^^
-
-**POST**
-
-This endpoint is used to create a new user account. You need to provide a username, email, and password to register a new user.
-
-If successful, it returns this:
-
-.. code-block:: json
-
-   {
-       "message": "User registered successfully"
-   }
-
-If there is an error, the response will look like this:
-
-.. code-block:: json
-
-   {
-       "error": "<Error Message>"
-   }
-
-The errors that can be returned are:
-
-* ``"Username, email and password are required"`` - if any of the required fields are missing.
-* ``"Email must end with @myport.ac.uk"`` - if the email does not end with @myport.ac.uk.
 
 /join_society
 ^^^^^^^^^^^^^
@@ -95,6 +96,26 @@ Possible errors (returned as plain strings):
 * ``"Error Bad Soc ID"`` - if the society ID is invalid or does not exist.
 * ``"<User ID> Does not exist"`` - if the user ID from the token does not exist in the database.
 * ``"<User ID> is all ready in the society"`` - if the user is already a member.
+
+/leave_society
+^^^^^^^^^^^^^^^
+
+**POST**
+
+This endpoint allows the user to leave a society. The user must provide the society ID and the token received by the ``/login`` endpoint in the header of the request.
+
+The response will be a plain string:
+
+.. code-block:: text
+
+   "user <Username> left society <Society ID>"
+
+Possible errors (returned as plain strings):
+
+* ``"Invalid society id"`` - if the society ID is missing or negative.
+* ``"socierty does not exsist"`` - if the society does not exist in the database.
+* ``"error, user is not a member of this socierty"`` - if the user is not a member of the specified society.
+
 
 /friend_request
 ^^^^^^^^^^^^^^^
@@ -207,25 +228,6 @@ This is an example of the response:
 
 This endpoint always succeeds and does not return any error messages.
 
-/leave_society
-^^^^^^^^^^^^^^^
-
-**POST**
-
-This endpoint allows the user to leave a society. The user must provide the society ID and the token received by the ``/login`` endpoint in the header of the request.
-
-The response will be a plain string:
-
-.. code-block:: text
-
-   "user <Username> left society <Society ID>"
-
-Possible errors (returned as plain strings):
-
-* ``"Invalid society id"`` - if the society ID is missing or negative.
-* ``"socierty does not exsist"`` - if the society does not exist in the database.
-* ``"error, user is not a member of this socierty"`` - if the user is not a member of the specified society.
-
 /list_friends
 ^^^^^^^^^^^^^^
 
@@ -247,37 +249,7 @@ The response will be:
        ]
    }
 
-/get_my_details
-^^^^^^^^^^^^^^^
 
-**GET**
-
-This endpoint returns the profile information of the authenticated user, including their societies and friends. It requires authentication.
-
-The response will be:
-
-.. code-block:: json
-
-   {
-       "username": "user_username",
-       "email": "user@myport.ac.uk",
-       "created_at": "2024-01-01T00:00:00Z",
-       "societies": [
-           {
-               "id": 1,
-               "name": "Society Name"
-           }
-       ],
-       "friends": [
-           {
-               "id": 2,
-               "username": "friend_username"
-           }
-       ]
-   }
-
-Events
-------
 
 /get_users_events
 ^^^^^^^^^^^^^^^^^
@@ -301,8 +273,12 @@ The response will be:
        ]
    }
 
+Events
+------
+
 /get_society_events/{society_id}
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 **GET**
 
@@ -353,6 +329,36 @@ The response will be:
 Possible errors:
 
 * ``"Event not found"`` - if the event ID does not exist.
+
+/get_my_details
+^^^^^^^^^^^^^^^
+
+**GET**
+
+This endpoint returns the profile information of the authenticated user, including their societies and friends. It requires authentication.
+
+The response will be:
+
+.. code-block:: json
+
+   {
+       "username": "user_username",
+       "email": "user@myport.ac.uk",
+       "created_at": "2024-01-01T00:00:00Z",
+       "societies": [
+           {
+               "id": 1,
+               "name": "Society Name"
+           }
+       ],
+       "friends": [
+           {
+               "id": 2,
+               "username": "friend_username"
+           }
+       ]
+   }
+
 
 /create_event
 ^^^^^^^^^^^^^^
@@ -453,32 +459,6 @@ Possible errors:
 Posts
 -----
 
-/get_society_posts/{society_id}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-**GET**
-
-This endpoint returns all posts for a specific society, ordered by creation date (newest first). It does not require authentication.
-
-Parameters:
-
-* ``society_id`` - The ID of the society (path parameter).
-
-The response will be:
-
-.. code-block:: json
-
-   {
-       "posts": [
-           {
-               "id": 1,
-               "content": "Post content",
-               "created_at": "2024-01-01T00:00:00Z",
-               "author": "author_username",
-               "author_id": 1
-           }
-       ]
-   }
 
 /create_post
 ^^^^^^^^^^^^
@@ -555,6 +535,33 @@ Possible errors:
 
 * ``"Post not found"`` - if the post ID does not exist.
 * ``"Only committee members and presidents can delete posts"`` - if the user is not a committee member or president.
+
+/get_society_posts/{society_id}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**GET**
+
+This endpoint returns all posts for a specific society, ordered by creation date (newest first). It does not require authentication.
+
+Parameters:
+
+* ``society_id`` - The ID of the society (path parameter).
+
+The response will be:
+
+.. code-block:: json
+
+   {
+       "posts": [
+           {
+               "id": 1,
+               "content": "Post content",
+               "created_at": "2024-01-01T00:00:00Z",
+               "author": "author_username",
+               "author_id": 1
+           }
+       ]
+   }
 
 Event Interactions
 ------------------

@@ -9,6 +9,9 @@ This document outlines the database schema for the SETaP API.
 Database Schema
 ---------------
 
+.. image:: database_diagram.jpg
+
+
 Tables
 ^^^^^^
 
